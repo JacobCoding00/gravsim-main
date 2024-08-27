@@ -1,0 +1,20 @@
+.grid {
+    display: grid;
+    background-color: rgb(75, 75, 75);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    border: 3px solid gray;
+
+}
+
+.point {
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    position: absolute;
+    border-radius: 50%;
+    
+}
