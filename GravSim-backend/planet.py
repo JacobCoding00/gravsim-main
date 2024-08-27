@@ -20,9 +20,10 @@ class Planet:
 
     def set_velocity(self, velocity):
         self.vel_x = velocity[0]
-        self.vel_x = velocity[1]
+        self.vel_y = velocity[1]
 
     def set_position(self, position):
-        self.vel_x = position[0]
-        self.vel_x = position[1]
+        print(position)
+        self.pos_x = position[0]
+        self.pos_y = position[1]
 

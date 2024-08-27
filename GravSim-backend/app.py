@@ -8,13 +8,12 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-coords = [[10,10],[20,20],[30,30]]
-planets = [Planet(1,1,1,1,1)]
+planets = [Planet(0,-0.4,0,700,900),Planet(100,0,0,700,400),Planet(0,0.5,0,700,100)]
 
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
-    gravityCalculator.calculate_gravity([], 1)
+    gravityCalculator.calculate_gravity(planets, 1)
     planet_positions = []
     for i in planets:
         planet_positions.append(i.get_position_vector)

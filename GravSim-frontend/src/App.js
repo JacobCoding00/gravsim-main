@@ -8,7 +8,9 @@ const Grid = ( {points} ) => {
 
     return (
       <div className='grid'>
-        <div className='point' style= {{ left: points.x, top: points.y}} />
+        {points.map((point, index) => (
+        <div key={index} className="point" style={{ left: `${point[0]}px`, top: `${point[1]}px`, position: "absolute" }}></div>
+      ))}
       </div>
     )
 }
@@ -16,7 +18,7 @@ const Grid = ( {points} ) => {
 function App() {
 
   const [data, setData] = useState([200,0]);
-  const [points, setPoints] = useState({x: 0, y: 0})
+  const [points, setPoints] = useState([]);
 
   useEffect(() => {
 
@@ -28,7 +30,7 @@ function App() {
       })
       .catch(error => {
         console.error('There was an error fetching the data!', error);
-      });
+      })
     {/*
     console.log("starting stream")
 
@@ -43,13 +45,11 @@ function App() {
       eventSource.close();
     };
     */}
-  }, []);
+  }, [data]);
 
 
   useEffect(() => {
-    const x = data[0]
-    const y = data[1];
-    setPoints({ x, y });
+    setPoints(data);
   }, [data]);
 
   return (
