@@ -23,7 +23,6 @@ class Planet:
         self.vel_y = velocity[1]
 
     def set_position(self, position):
-        print(position)
         self.pos_x = position[0]
         self.pos_y = position[1]
 

@@ -30,21 +30,8 @@ function App() {
       })
       .catch(error => {
         console.error('There was an error fetching the data!', error);
-      })
-    {/*
-    console.log("starting stream")
-
-    const eventSource = new EventSource('http://localhost:5000/stream'); // Adjust the URL as needed
-    eventSource.onmessage = (event) => {
-      setData(event.data);
-      console.log("data received");
-    };
-
-    eventSource.onerror = (err) => {
-      console.error('EventSource failed:', err);
-      eventSource.close();
-    };
-    */}
+      });
+    
   }, [data]);
 
 

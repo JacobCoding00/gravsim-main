@@ -30,7 +30,6 @@ def calculate_gravity(planet_array, time):
         # calculate new velocity vector for each planet
         new_vel_x = i.get_velocity_vector[0] + total_acc_x * time
         new_vel_y = i.get_velocity_vector[1] + total_acc_y * time
-        print("vel: " , new_vel_x , new_vel_y)
         i.set_velocity([new_vel_x, new_vel_y])
 
         # calculate new position of each planet
