@@ -1,8 +1,8 @@
 import { useState , useEffect} from 'react';
 import axios from 'axios';
+import io from 'socket.io-client'
 import './App.css';
 import './Grid.css';
-
 
 const Grid = ( {points} ) => {
 
@@ -17,31 +17,34 @@ const Grid = ( {points} ) => {
 
 function App() {
 
-  const [data, setData] = useState([200,0]);
-  const [points, setPoints] = useState([]);
+  const [data, setData] = useState([]);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
+    // Connect to Flask WebSocket server
+    const socket = io('http://localhost:5000', {
+      transports: ['websocket']  // Use only WebSocket transport
+    });
 
-    console.log('fetching data');
-    axios.get('http://127.0.0.1:5000/api/data')
-      .then(response => {
-        setData(response.data.message);
-        console.log({data})
-      })
-      .catch(error => {
-        console.error('There was an error fetching the data!', error);
-      });
-    
-  }, [data]);
+    // Listen for messages from the server
+    socket.on('planet_positions', (message) => {
+      console.log('Received message:', message);
+      setData(message); 
+      console.log(message) // Set data from the server
+    })
 
+    socket.emit('message', 'hello from react');
+    socket.emit('start') // start the simulation
 
-  useEffect(() => {
-    setPoints(data);
-  }, [data]);
+    // Set socket in state
+    setSocket(socket);
+
+  }, []);
+
 
   return (
     <div className="App">
-      <Grid points={points}/>
+      <Grid points={data}/>
     </div>
   );
 }
