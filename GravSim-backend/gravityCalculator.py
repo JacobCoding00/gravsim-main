@@ -37,9 +37,4 @@ def calculate_gravity(planet_array, time):
         new_pos_y = i.get_position_vector[1] + i.get_velocity_vector[1] * time
         i.set_position([new_pos_x, new_pos_y])
 
-def increment(planet_array):
-    while(True):
-        calculate_gravity(planet_array, 10)
-        time.sleep(0.01)
-
 
