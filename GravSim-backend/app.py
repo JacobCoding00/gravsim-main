@@ -10,7 +10,9 @@ app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-planets = [Planet(0,-0.3,0,600,900),Planet(100,0,0,600,400)]
+planets = [Planet(0,0,0.6,600,100),Planet(0,0,0.6,600,700),Planet(0,0,0.6,300,700)]
+alive_planets = planets[:] # store a copy of planets
+eliminated_planets_index = [] # indexes of all eliminated planets
 play = False
 
 
@@ -35,19 +37,43 @@ def start_sim():
     play = True
     while (play):
         for i in range(2): # do gravity calculation time step 2 times for finer resolution
-            gravityCalculator.calculate_gravity(planets, 2)
+            gravityCalculator.calculate_gravity(alive_planets, 2)
         planet_positions = []
+
+        # tell frontend that a planet is eliminated
+        for i in alive_planets:
+            if i.is_eliminated():
+                alive_planets.remove(i)
+                eliminated_planets_index.append(planets.index(i))
+                emit('planet_eliminated', eliminated_planets_index)
+                print("eliminated planets", eliminated_planets_index)
+
+        # if one or fewer planets remain, end simulation
+        if len(alive_planets) <= 1:
+            play = False
+
+        # append array that is sent to frontend with new position vectors
         for i in planets:
             planet_positions.append(i.get_position_vector)
         emit('planet_positions', planet_positions)
         print("planet positions sent", planet_positions)
-        time.sleep(0.016) # 60 updates per second
+        time.sleep(0.016) # 60 updates per secon
 
 
 @socketio.on('stop')
 def stop_sim():
     global play
     play = False
+
+
+@socketio.on('reset')
+def reset_sim():
+    global planets
+    global alive_planets
+    global eliminated_planets_index
+    planets = [Planet(0,0,0.6,600,100),Planet(0,0,0.6,600,700),Planet(0,0,0.6,300,700)]
+    alive_planets = planets[:]
+    eliminated_planets_index = []
 
 
 # When the client disconnects

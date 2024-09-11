@@ -1,10 +1,11 @@
 class Planet:
-    def __init__(self, mass, vel_x, vel_y, pos_x, pos_y):
+    def __init__(self, mass, vel_x, vel_y, pos_x, pos_y,):
         self.mass = mass
         self.vel_x = vel_x
         self.vel_y = vel_y
         self.pos_x = pos_x
         self.pos_y = pos_y
+        self.eliminated = False
 
     @property
     def get_mass(self):
@@ -25,4 +26,10 @@ class Planet:
     def set_position(self, position):
         self.pos_x = position[0]
         self.pos_y = position[1]
+
+    def eliminate(self):
+        self.eliminated = True
+
+    def is_eliminated(self):
+        return self.eliminated
 
