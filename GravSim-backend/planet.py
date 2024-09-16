@@ -1,3 +1,6 @@
+import math
+
+
 class Planet:
     def __init__(self, mass, vel_x, vel_y, pos_x, pos_y,):
         self.mass = mass
@@ -13,12 +16,12 @@ class Planet:
 
     @property
     def get_velocity_vector(self):
-        return (self.vel_x, self.vel_y)
+        return [self.vel_x, self.vel_y]
 
     @property
     def get_position_vector(self):
         return [self.pos_x, self.pos_y]
-
+   
     def set_velocity(self, velocity):
         self.vel_x = velocity[0]
         self.vel_y = velocity[1]
@@ -32,4 +35,10 @@ class Planet:
 
     def is_eliminated(self):
         return self.eliminated
+
+    @property
+    def get_angle_and_speed(self):
+        speed = math.sqrt((self.vel_x * self.vel_x) + (self.vel_y * self.vel_y))
+        angle = math.atan2(self.vel_y , self.vel_x)
+        return [angle, speed]
 

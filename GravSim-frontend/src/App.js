@@ -1,5 +1,4 @@
 import { useState , useEffect} from 'react';
-import axios from 'axios';
 import io from 'socket.io-client'
 import './App.css';
 import './Grid.css';
@@ -11,9 +10,11 @@ const Grid = ( {points} ) => {
 
   return (
     <div className='grid'>
-      {points.map((point, index) => (
-      <div key={index} className="point" style={{ left: `${point[0] * 0.1}%`, top: `${point[1] * 0.1}%`, position: "absolute", backgroundColor: colors[index % colors.length], }}></div>
-    ))}
+      {points.map((point, index) => ( // map the points to corect postions on grid
+      <div key={index} className="point" style={{ height: `${Math.sqrt(point[4]) * 5}px`, width: `${Math.sqrt(point[4]) * 5}px`, left: `${point[0] * 0.1}%`, top: `${point[1] * 0.1}%`, position: "absolute", backgroundColor: colors[index % colors.length], }}></div>))}
+
+      {points.map((point, index) => ( // map velocity arrows to grid in same position as corresponding points
+      <div key={index} className="arrow" style={{ left: `${point[0] * 0.1}%`, top: `${point[1] * 0.1}%`, height:`${point[3] * 50}px`,position: "absolute", transform: `rotate(${point[2] + 3.141 / 2}rad) translate(-1.5px, -${point[3] * 50}px)`, }}></div>))}
     </div>
     )
 }
@@ -75,6 +76,7 @@ function App() {
       {eliminatedPlanets.map((planetIndex, index) => (
       <div key={index} className='point' style={{ left: `75%`, top: `${index * 1.5 + 10}%`, position: "absolute", backgroundColor: colors[planetIndex % colors.length],}}></div>
       ))}
+      
     </div>
   );
 }

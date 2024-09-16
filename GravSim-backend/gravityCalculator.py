@@ -31,10 +31,15 @@ def calculate_gravity(planet_array, time):
             # calculate new velocity vector for each planet
             new_vel_x = i.get_velocity_vector[0] + total_acc_x * time
             new_vel_y = i.get_velocity_vector[1] + total_acc_y * time
-            if new_vel_x >= 500:
-                new_vel_x = 500
-            if new_vel_y >= 500:
-                new_vel_y = 500
+            # enforce a speed limit on planets to avoid them shooting off in close encounters
+            if new_vel_x >= 3:
+                new_vel_x = 3
+            if new_vel_y >= 3:
+                new_vel_y = 3
+            if new_vel_x <= -3:
+                new_vel_x = -3
+            if new_vel_y <= -3:
+                new_vel_y = -3
             i.set_velocity([new_vel_x, new_vel_y])
 
             # calculate new position of each planet

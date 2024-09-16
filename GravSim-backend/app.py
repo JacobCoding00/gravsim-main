@@ -54,10 +54,10 @@ def start_sim():
 
         # append array that is sent to frontend with new position vectors
         for i in planets:
-            planet_positions.append(i.get_position_vector)
+            planet_positions.append(i.get_position_vector + i.get_angle_and_speed + [i.get_mass])
         emit('planet_positions', planet_positions)
         print("planet positions sent", planet_positions)
-        time.sleep(0.016) # 60 updates per secon
+        time.sleep(0.016) # 60 updates per second
 
 
 @socketio.on('stop')
@@ -71,7 +71,7 @@ def reset_sim():
     global planets
     global alive_planets
     global eliminated_planets_index
-    planets = [Planet(0,0,0.6,600,100),Planet(0,0,0.6,600,700),Planet(0,0,0.6,300,700)]
+    planets = [Planet(40,0,0,500,500),Planet(10,0,0.2,600,700),Planet(3,0,-0.5,300,700),Planet(4,0,0.4,100,700),Planet(3,0,-0.2,210,700)]
     alive_planets = planets[:]
     eliminated_planets_index = []
 
