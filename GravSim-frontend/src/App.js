@@ -6,12 +6,12 @@ import './Button.css';
 
 const colors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A6", "#A633FF"]; 
 
-const Grid = ( {points} ) => {
+const Grid = ( {points, onClick} ) => {
 
   return (
-    <div className='grid'>
+    <div className='grid' onClick={onClick}>
       {points.map((point, index) => ( // map the points to corect postions on grid
-      <div key={index} className="point" style={{ height: `${Math.sqrt(point[4]) * 5}px`, width: `${Math.sqrt(point[4]) * 5}px`, left: `${point[0] * 0.1}%`, top: `${point[1] * 0.1}%`, position: "absolute", backgroundColor: colors[index % colors.length], }}></div>))}
+      <div key={index} className="point" style={{ height: `${Math.sqrt(point[4]) / 2.5}%`, width: `${Math.sqrt(point[4]) / 2.5}%`, left: `${point[0] * 0.1}%`, top: `${point[1] * 0.1}%`, position: "absolute", backgroundColor: colors[index % colors.length], }}></div>))}
 
       {points.map((point, index) => ( // map velocity arrows to grid in same position as corresponding points
       <div key={index} className="arrow" style={{ left: `${point[0] * 0.1}%`, top: `${point[1] * 0.1}%`, height:`${point[3] * 50}px`,position: "absolute", transform: `rotate(${point[2] + 3.141 / 2}rad) translate(-1.5px, -${point[3] * 50}px)`, }}></div>))}
@@ -22,8 +22,8 @@ const Grid = ( {points} ) => {
 const Button = ({ top, left, label, onClick}) => {
   const buttonStyle = {
     position: 'absolute',
-    top: top,    // Dynamically set top position
-    left: left,  // Dynamically set left position
+    top: top,
+    left: left,
   };
 
   return <button style={buttonStyle} className='button-36' onClick={onClick}>{label}</button>
@@ -61,15 +61,36 @@ function App() {
 
   }, []);
 
-  const emitMessage = (message) => {
+  const emitMessage = (message) => { // not needed, remove before finished
     console.log(message)
     socket.emit(message)
   };
 
+  const [newPlanet, setNewPlanet] = useState([]);
+
+  const addPlanet = (e) => {
+    const gridRect = e.target.getBoundingClientRect();
+
+    const x = e.clientX - gridRect.left;
+    const y = e.clientY - gridRect.top;
+
+    const xAdjusted = (x / gridRect.width) * 1000 // backend considers grid 1000 x 1000
+    const yAdjusted = (y / gridRect.height) * 1000
+    
+    setNewPlanet((prevPlanet) => [...prevPlanet, xAdjusted, yAdjusted]);
+    console.log(newPlanet.length);
+
+    if (newPlanet.length >= 4) {
+      console.log(newPlanet.length);
+      socket.emit('add_planet', newPlanet);
+      setNewPlanet([]);
+    }
+  }
+
 
   return (
     <div className='App'>
-      <Grid points={data}/>
+      <Grid points={data} onClick={(e) => addPlanet(e)}/>
       <Button top="10%" left="65%" label="start" onClick={() => emitMessage('start')}/>
       <Button top="18%" left="65%" label="stop" onClick={() => emitMessage('stop')}/>
       <Button top="26%" left="65%" label="reset" onClick={() => emitMessage('reset')}/>

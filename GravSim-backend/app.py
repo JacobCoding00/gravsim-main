@@ -4,13 +4,14 @@ from flask_socketio import SocketIO, send, emit
 import gravityCalculator
 from planet import Planet
 import time
+import math
 import json
 
 app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-planets = [Planet(0,0,0.6,600,100),Planet(0,0,0.6,600,700),Planet(0,0,0.6,300,700)]
+planets = []
 alive_planets = planets[:] # store a copy of planets
 eliminated_planets_index = [] # indexes of all eliminated planets
 play = False
@@ -37,7 +38,7 @@ def start_sim():
     play = True
     while (play):
         for i in range(2): # do gravity calculation time step 2 times for finer resolution
-            gravityCalculator.calculate_gravity(alive_planets, 2)
+            gravityCalculator.calculate_gravity(alive_planets, 1)
         planet_positions = []
 
         # tell frontend that a planet is eliminated
@@ -71,9 +72,31 @@ def reset_sim():
     global planets
     global alive_planets
     global eliminated_planets_index
-    planets = [Planet(40,0,0,500,500),Planet(10,0,0.2,600,700),Planet(3,0,-0.5,300,700),Planet(4,0,0.4,100,700),Planet(3,0,-0.2,210,700)]
+    planets = []
     alive_planets = planets[:]
     eliminated_planets_index = []
+    emit('planet_positions', [])
+
+
+@socketio.on('add_planet')
+def add_planet(coords):
+    global planets
+    global alive_planets
+    # calculate velocity with coordinates
+    x = coords[2] - coords[0]
+    y = coords[3] - coords[1]
+    x = x / 100
+    y = y / 100
+    angle = math.atan2(x, y)
+    # add planet to array
+    planets.append(Planet(30,x,y,coords[0],coords[1]))
+    alive_planets = planets[:]
+    print(planets[-1].vel_x)
+    planet_positions =[]
+    # emit new planet to frontend for display
+    for i in planets:
+        planet_positions.append(i.get_position_vector + i.get_angle_and_speed + [i.get_mass])
+    emit('planet_positions', planet_positions)
 
 
 # When the client disconnects

@@ -9,6 +9,7 @@ class Planet:
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.eliminated = False
+        self.merged_to = []
 
     @property
     def get_mass(self):
@@ -41,4 +42,10 @@ class Planet:
         speed = math.sqrt((self.vel_x * self.vel_x) + (self.vel_y * self.vel_y))
         angle = math.atan2(self.vel_y , self.vel_x)
         return [angle, speed]
+
+    def merge_with(self, planet):
+        self.merged_to.append(planet)
+
+    def get_merge(self):
+        return self.merged_to
 
